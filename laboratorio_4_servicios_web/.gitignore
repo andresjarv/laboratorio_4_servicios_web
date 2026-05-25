@@ -1,0 +1,54 @@
+# ==========================================
+# 1. Variables de entorno y Seguridad (¡CRÍTICO!)
+# ==========================================
+# NUNCA debes subir contraseñas, tokens JWT o cadenas de conexión a la base de datos.
+.env
+.env.*
+!.env.example
+
+# ==========================================
+# 2. Entornos virtuales de Python
+# ==========================================
+# Git no debe rastrear las librerías instaladas, para eso es el requirements.txt
+venv/
+env/
+.venv/
+Scripts/
+
+# ==========================================
+# 3. Archivos compilados de Python y Caché
+# ==========================================
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# ==========================================
+# 4. Bases de datos locales
+# ==========================================
+# Aunque usarán PostgreSQL en Docker, bloqueamos SQLite por si hacen pruebas locales
+*.sqlite3
+*.db
+
+# ==========================================
+# 5. Frontend (Si deciden usar React, Vue o Angular)
+# ==========================================
+# Si eligen un framework JS, esta carpeta es gigante y arruinará el repositorio si la suben
+node_modules/
+dist/
+build/
+.next/
+.nuxt/
+
+# ==========================================
+# 6. Configuraciones de Editores de Código y SO
+# ==========================================
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.DS_Store
+Thumbs.db
