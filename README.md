@@ -16,7 +16,8 @@ Este archivo es el corazón de la conexión. Se encargará de leer el archivo .e
 
     Esta carpeta contiene los Routers. Su única responsabilidad es definir las URLs (ej. /usuarios/), los métodos HTTP (GET, POST) y qué esquema de datos entra y sale.
 
-* **[app/api/auth.py](app/api/auth.py)**
+* **[app/api/auth.py](backend/app/api/auth.py)**
+
     Maneja el inicio de sesión. Recibe un usuario y contraseña mediante OAuth2PasswordRequestForm, verifica en la base de datos (que programaremos luego) y, si todo es correcto, emite y devuelve el Token JWT.
 
 * **app/api/usuarios.py**
