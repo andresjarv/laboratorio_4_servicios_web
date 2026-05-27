@@ -13,13 +13,17 @@ Para ejecutar este proyecto en un entorno local, asegúrese de contar con:
 Antes de levantar los contenedores, es necesario configurar las variables de entorno. 
 
 ### 1. Clone el repositorio y sitúese en la raíz del proyecto:
-   `Bash
-   git clone https://github.com/andresjarv/laboratorio_4_servicios_web.git
-   cd laboratorio_4_servicios_web
+   
+    ```bash
+    git clone https://github.com/andresjarv/laboratorio_4_servicios_web.git
+    cd laboratorio_4_servicios_web
+    ```
 
 ### 2. Diríjase a la carpeta del backend y duplique el archivo de ejemplo:
     
-    cp backend/.env.example backend/.env`
+    ```bash
+    cp backend/.env.example backend/.env
+    ```
 
 Edite el archivo backend/.env con credenciales seguras. Este archivo es ignorado por Git por motivos de seguridad. Las variables requeridas son:
 
@@ -48,22 +52,22 @@ El despliegue está orquestado mediante docker-compose.yml, el cual levanta y co
 
 ### 4. Instrucciones de Ejecución
 Para construir las imágenes y levantar todo el sistema en segundo plano, ejecute el siguiente comando desde la raíz del proyecto (donde se encuentra el docker-compose.yml):
-
-Bash
-    docker compose up -d --build
+    ```bash
+        docker compose up -d --build
+    ```
 Una vez finalizado el proceso, puede verificar el correcto funcionamiento accediendo a la documentación interactiva (Swagger) de la API en su navegador:
 🔗 http://localhost:8000/docs
 
 ### 5. Gestión de los Contenedores (Apagado y Reinicio)
 * Para apagar el sistema (sin borrar los datos guardados en el volumen):
-
-Bash
+    ```bash
     docker compose stop
+    ```
 * Para destruir los contenedores y liberar la red (preservando el volumen de datos):
-
-Bash
-    docker compose down    
+    ```bash
+    docker compose down  
+    ```  
 * Para un reinicio duro borrando la base de datos (CUIDADO: Elimina toda la persistencia):
-
-Bash
+    ```bash
     docker compose down -v
+    ```
