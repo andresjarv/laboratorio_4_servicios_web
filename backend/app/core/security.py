@@ -17,7 +17,7 @@ from app.models.usuario import Usuario
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 # URL donde el frontend debe enviar las credenciales para obtener el token
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="usuarios/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
