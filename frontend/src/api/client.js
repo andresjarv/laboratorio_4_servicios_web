@@ -1,4 +1,6 @@
-const BASE_URL = 'http://localhost:8000'
+// En Docker, Nginx hace de proxy: /api/* → http://backend:8000/*
+// En desarrollo local, cambia a: http://localhost:8000
+const BASE_URL = import.meta.env.VITE_API_URL || '/api'
 
 function getToken() {
   return localStorage.getItem('token')
