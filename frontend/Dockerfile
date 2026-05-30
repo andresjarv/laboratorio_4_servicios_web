@@ -5,7 +5,7 @@ WORKDIR /app
 
 # Instalar dependencias primero (aprovecha cache de Docker)
 COPY package.json ./
-RUN npm install
+RUN npm install --strict-ssl=false
 
 # Copiar el resto del código y compilar
 COPY . .
