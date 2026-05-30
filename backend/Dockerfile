@@ -1,22 +1,25 @@
-# backend/Dockerfile
+# ── ETAPA 1: Build ──────────────────────────────────────────────
+FROM node:20-alpine AS builder
 
-# 1. Usar una imagen oficial de Python ligera
-FROM python:3.10-slim
-
-# 2. Definir la carpeta de trabajo dentro del contenedor
 WORKDIR /app
 
-# 3. Copiar primero el archivo de dependencias (optimiza el caché de Docker)
-COPY requirements.txt .
+# Instalar dependencias primero (aprovecha cache de Docker)
+COPY package.json ./
+RUN npm install
 
-# 4. Instalar las librerías necesarias
-RUN pip install --no-cache-dir -r requirements.txt
-
-# 5. Copiar todo el código de tu carpeta backend al contenedor
+# Copiar el resto del código y compilar
 COPY . .
+RUN npm run build
 
-# 6. Exponer el puerto por el que escuchará FastAPI
-EXPOSE 8000
+# ── ETAPA 2: Servidor Nginx ──────────────────────────────────────
+FROM nginx:alpine
 
-# 7. El comando para encender el servidor cuando el contenedor inicie
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Copiar los archivos compilados al servidor
+COPY --from=builder /app/dist /usr/share/nginx/html
+
+# Copiar nuestra configuración personalizada de Nginx
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
