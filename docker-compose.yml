@@ -26,6 +26,17 @@ services:
       - DATABASE_URL=postgresql://admin:superpassword123@postgres_db:5432/reservas_db
     depends_on:
       - postgres_db # Obliga a que la base de datos inicie antes que el backend
+      
+ # SERVICIO 3: Frontend en React + Nginx
+  frontend:
+    build:
+      context: ./frontend
+    container_name: web_reservas
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
 
 # Declaramos el volumen de persistencia
 volumes:
