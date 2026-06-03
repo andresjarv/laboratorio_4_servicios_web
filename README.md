@@ -1,76 +1,61 @@
 Markdown
-# 🚀 Documentación de Despliegue (Rama Ops)
+# Taller 4: Sistema de Reservas Institucional
 
-Este documento detalla la infraestructura y el proceso de despliegue de la API de Reservas Institucionales utilizando contenedores Docker.
+Este proyecto es una aplicación Full-Stack containerizada diseñada para la gestión de espacios y reservas. La arquitectura implementa un backend robusto en Python, un frontend interactivo y una base de datos relacional, todo orquestado mediante Docker Compose para garantizar consistencia entre los entornos de desarrollo y producción.
 
-## A. Requisitos Previos
-Para ejecutar este proyecto en un entorno local, asegúrese de contar con:
-* **Docker Desktop** (con WSL 2 habilitado si se encuentra en Windows).
-* **Git** para la clonación del repositorio.
-* Puertos libres: `8000` (FastAPI) y `5432` (PostgreSQL).
+---
 
-## B. Configuración Inicial y Variables de Entorno
-Antes de levantar los contenedores, es necesario configurar las variables de entorno. 
+## 🏗️ Arquitectura del Sistema
 
-### 1. Clone el repositorio y sitúese en la raíz del proyecto:
+El proyecto utiliza una arquitectura de tres capas implementada a través de contenedores aislados:
 
-    
-    git clone https://github.com/andresjarv/laboratorio_4_servicios_web.git
-    cd laboratorio_4_servicios_web
-    
+1. **Frontend (Nginx + React/Vite):** - Utiliza un *multi-stage build*. Node.js se encarga de compilar los recursos estáticos, los cuales son servidos por un servidor web Nginx ultraligero (`alpine`).
+   - Nginx está configurado como un **Proxy Reverso**. Atrapa todas las peticiones a la ruta `/api/` y las redirige internamente al backend, solucionando problemas de CORS y ocultando los puertos internos al usuario final.
+2. **Backend (FastAPI - Python):**
+   - API RESTful de alto rendimiento que maneja la lógica de negocio, autenticación JWT (con encriptación bcrypt) y validación de datos a través de esquemas de Pydantic.
+3. **Base de Datos (PostgreSQL):**
+   - Base de datos relacional persistente mediante volúmenes de Docker, estructurada a través de SQLAlchemy (ORM).
 
-### 2. Diríjase a la carpeta del backend y duplique el archivo de ejemplo:
-    
-    
-    cp backend/.env.example backend/.env
-    
-  
+---
 
-Edite el archivo backend/.env con credenciales seguras. Este archivo es ignorado por Git por motivos de seguridad. Las variables requeridas son:
+## 🌿 Estrategia de Ramas (Git Flow)
 
-**DATABASE_URL:** Cadena de conexión a la base de datos PostgreSQL.
+Para mantener la integridad del código y facilitar el trabajo colaborativo, implementamos la siguiente estructura de control de versiones:
 
-**SECRET_KEY:** Clave alfanumérica para el cifrado y firma de los tokens JWT.
+* **`dev` (Desarrollo):** Rama de integración de código puro. Aquí residen los controladores, modelos, componentes de React y lógica de negocio.
+* **`ops` (Operaciones/DevOps):** Rama dedicada a la infraestructura. Contiene los `Dockerfiles` separados para cada ecosistema, configuraciones de Nginx y el orquestador `docker-compose.yml`.
+* **`main` (Producción):** Rama final de despliegue. Contiene la versión estable, testeada y completamente funcional, resultado de la fusión entre el código de `dev` y la infraestructura de `ops`.
 
-### 3. Arquitectura de Contenedores y Red
-El despliegue está orquestado mediante docker-compose.yml, el cual levanta y conecta los siguientes servicios en una red interna privada:
+---
 
-* **Contenedor** postgres_db **(Base de Datos)**:
+## 🚀 Instrucciones de Despliegue
 
-    * **Imagen:** postgres:15-alpine (Versión ligera).
+### Requisitos Previos
+* Docker y Docker Compose instalados en el sistema.
+* Git para la clonación del repositorio.
+* Puertos `80` (HTTP), `8000` (API) y `5432` (BD) libres en la máquina host.
 
-    * **Puerto expuesto:** 5432
+### Pasos para Ejecución
 
-    * **Persistencia:** Se configuró un volumen de Docker (pgdata) mapeado al directorio interno de PostgreSQL. Esto garantiza que las tablas, los usuarios y las reservas no se eliminen cuando el contenedor se apaga o reinicia.
+1. **Clonar el repositorio y ubicarse en la rama principal:**
+   ```bash
+   git clone https://github.com/andresjarv/laboratorio_4_servicios_web.git
+   cd laboratorio_4_servicios_web
+   git checkout main
 
-* **Contenedor backend (API Rest):**
+2. **Levantar la infraestructura (Build & Run):**
+   ```bash
+   docker compose up -d --build
 
-    * **Construcción:** A partir de un Dockerfile propio utilizando la imagen oficial python:3.10-slim.
+3. **Acceso al Sistema:**
+* Interfaz Gráfica (Frontend): http://localhost
+* Documentación de la API (Swagger): http://localhost:8000/docs
 
-    * **Puerto expuesto:** 8000
+**Equipo de Desarrollo:**
+* Julian David Velez Arango - Desarrollo Frontend (React/Vite).
 
-    * **Dependencia:** Condicionado mediante depends_on para iniciar únicamente cuando el motor de base de datos esté activo.
+* Diego Alejandro Giraldo Bolivar  - Desarrollo Frontend / UI.
 
-### 4. Instrucciones de Ejecución
-Para construir las imágenes y levantar todo el sistema en segundo plano, ejecute el siguiente comando desde la raíz del proyecto (donde se encuentra el docker-compose.yml):
-    
-    
-    docker compose up -d --build
-    
-    
-Una vez finalizado el proceso, puede verificar el correcto funcionamiento accediendo a la documentación interactiva (Swagger) de la API en su navegador:
-🔗 http://localhost:8000/docs
+* Jorge Andrés Vidal Ramírez - Desarrollo Backend (FastAPI), Base de Datos y Arquitectura DevOps (Docker/Nginx).
 
-### 5. Gestión de los Contenedores (Apagado y Reinicio)
-* Para apagar el sistema (sin borrar los datos guardados en el volumen):
-    ```bash
-    docker compose stop
-    ```
-* Para destruir los contenedores y liberar la red (preservando el volumen de datos):
-    ```bash
-    docker compose down  
-    ```  
-* Para un reinicio duro borrando la base de datos (CUIDADO: Elimina toda la persistencia):
-    ```bash
-    docker compose down -v
-    ```
+Desarrollado para la Institución Universitaria ITM.
