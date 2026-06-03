@@ -6,7 +6,7 @@ from app.models.espacio import Espacio, EstadoEspacio
 from app.schemas.reserva import ReservaCreate
 from app.models.usuario import Usuario
 
-def crear_reserva(db: Session, reserva: ReservaCreate, usuario_id: int):
+def crear_reserva(db: Session, reserva: ReservaCreate, id_usuario: int):
     # Regla F: Hora inicio < hora fin
     if reserva.hora_inicio >= reserva.hora_fin:
         raise HTTPException(status_code=400, detail="La hora de inicio debe ser anterior a la hora de fin")
@@ -56,7 +56,7 @@ def crear_reserva(db: Session, reserva: ReservaCreate, usuario_id: int):
         raise HTTPException(status_code=400, detail="Ya existe una reserva que se cruza con este horario")
 
     # Si pasa todas las reglas, creamos la reserva (se guarda como 'esperando' por defecto)
-    db_reserva = Reserva(**reserva.model_dump(), id_usuario=usuario_id)
+    db_reserva = Reserva(**reserva.model_dump(), id_usuario=id_usuario)
     db.add(db_reserva)
     db.commit()
     db.refresh(db_reserva)
